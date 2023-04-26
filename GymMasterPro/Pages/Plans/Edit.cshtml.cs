@@ -8,37 +8,34 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Entities;
 using GymMasterPro.Data;
-using Microsoft.AspNetCore.Identity;
 
-namespace GymMasterPro.Pages.Trainers
+namespace GymMasterPro.Pages.Plans
 {
     public class EditModel : PageModel
     {
         private readonly GymMasterPro.Data.ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
 
-        public EditModel(GymMasterPro.Data.ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public EditModel(GymMasterPro.Data.ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         [BindProperty]
-        public Trainer Trainer { get; set; } = default!;
+        public Plan Plan { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Trainers == null)
+            if (id == null || _context.Plans == null)
             {
                 return NotFound();
             }
 
-            var trainer =  await _context.Trainers.FirstOrDefaultAsync(m => m.Id == id);
-            if (trainer == null)
+            var plan =  await _context.Plans.FirstOrDefaultAsync(m => m.Id == id);
+            if (plan == null)
             {
                 return NotFound();
             }
-            Trainer = trainer;
+            Plan = plan;
             return Page();
         }
 
@@ -51,16 +48,7 @@ namespace GymMasterPro.Pages.Trainers
                 return Page();
             }
 
-            var loggedInUser = await _userManager.GetUserAsync(User);
-            if (loggedInUser == null)
-            {
-                return Page();
-            }
-            Trainer.UpdateAt = DateTime.Now;
-            Trainer.CreateAt = DateTime.Now;
-            Trainer.CreatedBy = loggedInUser?.UserName;
-
-            _context.Attach(Trainer).State = EntityState.Modified;
+            _context.Attach(Plan).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +56,7 @@ namespace GymMasterPro.Pages.Trainers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TrainerExists(Trainer.Id))
+                if (!PlanExists(Plan.Id))
                 {
                     return NotFound();
                 }
@@ -81,9 +69,9 @@ namespace GymMasterPro.Pages.Trainers
             return RedirectToPage("./Index");
         }
 
-        private bool TrainerExists(int id)
+        private bool PlanExists(int id)
         {
-          return (_context.Trainers?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Plans?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
