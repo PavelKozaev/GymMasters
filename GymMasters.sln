@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymMasters", "GymMasters\Gy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymMasterPro", "GymMasterPro\GymMasterPro.csproj", "{4DB193F3-C9D6-49D2-B3B2-4BAD516A89CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{0F40480F-E190-4796-8404-7DD9CE0F0BEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4DB193F3-C9D6-49D2-B3B2-4BAD516A89CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DB193F3-C9D6-49D2-B3B2-4BAD516A89CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DB193F3-C9D6-49D2-B3B2-4BAD516A89CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F40480F-E190-4796-8404-7DD9CE0F0BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F40480F-E190-4796-8404-7DD9CE0F0BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F40480F-E190-4796-8404-7DD9CE0F0BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F40480F-E190-4796-8404-7DD9CE0F0BEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
