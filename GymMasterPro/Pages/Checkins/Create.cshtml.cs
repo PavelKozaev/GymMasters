@@ -9,7 +9,7 @@ using Entities;
 using GymMasterPro.Data;
 using Microsoft.AspNetCore.Identity;
 
-namespace GymMasterPro.Pages.Trainers
+namespace GymMasterPro.Pages.Checkins
 {
     public class CreateModel : PageModel
     {
@@ -24,17 +24,19 @@ namespace GymMasterPro.Pages.Trainers
 
         public IActionResult OnGet()
         {
+        ViewData["MemberId"] = new SelectList(_context.Members, "Id", "FirstName");
+        ViewData["PlanId"] = new SelectList(_context.Plans, "Id", "Name");
             return Page();
         }
 
         [BindProperty]
-        public Trainer Trainer { get; set; } = default!;
+        public Checkin Checkin { get; set; } = default!;
         
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.Trainers == null || Trainer == null)
+          if (!ModelState.IsValid || _context.Checkins == null || Checkin == null)
             {
                 return Page();
             }
@@ -44,11 +46,11 @@ namespace GymMasterPro.Pages.Trainers
             {
                 return Page();
             }
-            Trainer.UpdateAt = DateTime.Now;
-            Trainer.CreateAt = DateTime.Now;
-            Trainer.CreatedBy = loggedInUser?.UserName;
+            Checkin.UpdateAt = DateTime.Now;
+            Checkin.CreateAt = DateTime.Now;
+            Checkin.CreatedBy = loggedInUser?.UserName;
 
-            _context.Trainers.Add(Trainer);
+            _context.Checkins.Add(Checkin);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

@@ -10,7 +10,7 @@ using Entities;
 using GymMasterPro.Data;
 using Microsoft.AspNetCore.Identity;
 
-namespace GymMasterPro.Pages.Plans
+namespace GymMasterPro.Pages.Checkins
 {
     public class EditModel : PageModel
     {
@@ -24,21 +24,23 @@ namespace GymMasterPro.Pages.Plans
         }
 
         [BindProperty]
-        public Plan Plan { get; set; } = default!;
+        public Checkin Checkin { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Plans == null)
+            if (id == null || _context.Checkins == null)
             {
                 return NotFound();
             }
 
-            var plan =  await _context.Plans.FirstOrDefaultAsync(m => m.Id == id);
-            if (plan == null)
+            var checkin =  await _context.Checkins.FirstOrDefaultAsync(m => m.Id == id);
+            if (checkin == null)
             {
                 return NotFound();
             }
-            Plan = plan;
+            Checkin = checkin;
+           ViewData["MemberId"] = new SelectList(_context.Members, "Id", "FirstName");
+           ViewData["PlanId"] = new SelectList(_context.Plans, "Id", "Name");
             return Page();
         }
 
@@ -56,12 +58,11 @@ namespace GymMasterPro.Pages.Plans
             {
                 return Page();
             }
-            Plan.UpdateAt = DateTime.Now;
-            Plan.CreateAt = DateTime.Now;
-            Plan.CreatedBy = loggedInUser?.UserName;
+            Checkin.UpdateAt = DateTime.Now;
+            Checkin.CreateAt = DateTime.Now;
+            Checkin.CreatedBy = loggedInUser?.UserName;
 
-
-            _context.Attach(Plan).State = EntityState.Modified;
+            _context.Attach(Checkin).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +70,7 @@ namespace GymMasterPro.Pages.Plans
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PlanExists(Plan.Id))
+                if (!CheckinExists(Checkin.Id))
                 {
                     return NotFound();
                 }
@@ -82,9 +83,9 @@ namespace GymMasterPro.Pages.Plans
             return RedirectToPage("./Index");
         }
 
-        private bool PlanExists(int id)
+        private bool CheckinExists(int id)
         {
-          return (_context.Plans?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Checkins?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
