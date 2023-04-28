@@ -12,7 +12,6 @@ namespace Entities
         public int Duration { get; set; }
         public double Price { get; set; }
         public string Notes { get; set; }
-        public virtual ICollection<Membership>? Membership { get; set; }
-        public virtual ICollection<Checkin> Checkins { get; set; }
+        public virtual ICollection<Membership>? Membership { get; set; }        
     }
 }

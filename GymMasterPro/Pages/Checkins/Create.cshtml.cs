@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Entities;
 using GymMasterPro.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymMasterPro.Pages.Checkins
 {
@@ -24,9 +25,14 @@ namespace GymMasterPro.Pages.Checkins
 
         public IActionResult OnGet()
         {
-        ViewData["MemberId"] = new SelectList(_context.Members, "Id", "FirstName");
-        ViewData["PlanId"] = new SelectList(_context.Plans, "Id", "Name");
+            GetMembers();
             return Page();
+        }
+
+        private void GetMembers()
+        {
+            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "FirstName");
+            //ViewData["PlanId"] = new SelectList(_context.Plans, "Id", "Name");
         }
 
         [BindProperty]
@@ -46,6 +52,21 @@ namespace GymMasterPro.Pages.Checkins
             //{
             //    return Page();
             //}
+            if (_context.Members.Include(x => x.Memberships)
+                                .Any(x => x.Id == Checkin.MemberId && x.Memberships!.Any(x => x.EndDate < DateTime.Now)))
+            {
+                GetMembers();
+                ViewData["Message"] = "Membership is expired for this member.";
+                return Page();
+            }
+
+            if (_context.Checkins.Any(x => x.MemberId == Checkin.MemberId && x.CreateAt.Date == DateTime.Today))
+            {
+                GetMembers();
+                ViewData["Message"] = "You have already checkedid in.";
+                return Page();
+            }
+
             Checkin.UpdateAt = DateTime.Now;
             Checkin.CreateAt = DateTime.Now;
             //Checkin.CreatedBy = loggedInUser?.UserName;
