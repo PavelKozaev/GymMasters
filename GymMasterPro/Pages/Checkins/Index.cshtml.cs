@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Entities;
-using GymMasterPro.Data;
 
 namespace GymMasterPro.Pages.Checkins
 {

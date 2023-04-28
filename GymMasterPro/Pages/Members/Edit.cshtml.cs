@@ -7,39 +7,43 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Entities;
-using GymMasterPro.Data;
 using Microsoft.AspNetCore.Identity;
+using Services.Interfaces;
 
 namespace GymMasterPro.Pages.Members
 {
     public class EditModel : PageModel
     {
-        private readonly GymMasterPro.Data.ApplicationDbContext _context;
+        private readonly IMemberService _memberService;
+        private readonly ITrainerService _trainerService;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public EditModel(GymMasterPro.Data.ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public EditModel(IMemberService memberService, 
+                         ITrainerService trainerService,    
+                         UserManager<IdentityUser> userManager)
         {
-            _context = context;
+            _memberService = memberService;
+            _trainerService = trainerService;
             _userManager = userManager;
         }
 
         [BindProperty]
         public Member Member { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null || _context.Members == null)
+            if (id == 0 || await _memberService.GetMembers() == null)
             {
                 return NotFound();
             }
 
-            var member =  await _context.Members.FirstOrDefaultAsync(m => m.Id == id);
+            var member = await _memberService.GetMemberById(id);
             if (member == null)
             {
                 return NotFound();
             }
             Member = member;
-           ViewData["TrainerId"] = new SelectList(_context.Trainers, "Id", "FirstName");
+           ViewData["TrainerId"] = new SelectList(await _trainerService.GetTrainers(), "Id", "FirstName");
             return Page();
         }
 
@@ -61,30 +65,14 @@ namespace GymMasterPro.Pages.Members
             Member.CreateAt = DateTime.Now;
             Member.CreatedBy = loggedInUser?.UserName;
 
-            _context.Attach(Member).State = EntityState.Modified;
+            var res = await _memberService.UpdateAsync(Member.Id, Member);
 
-            try
+            if (res is null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MemberExists(Member.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Page();
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool MemberExists(int id)
-        {
-          return (_context.Members?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
