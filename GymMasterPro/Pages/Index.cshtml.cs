@@ -52,7 +52,7 @@ namespace GymMasterPro.Pages
 
             if (_context.Members != null)
             {
-                InActiveMembers = await _context.Checkins.CountAsync(m => m.CreateAt < DateTime.Now.AddMonths(-1));
+                InActiveMembers = await _context.Members.CountAsync(m => m.CreateAt < DateTime.Now.AddMonths(-1));
             }
         }
     }
